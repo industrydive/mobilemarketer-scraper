@@ -45,6 +45,10 @@ class MmSpider(CrawlSpider):
         item['url'] = response.url
         item['title'] = response.css('h1::text').extract_first()
         item['body'] = ' '.join(response.css('div#content-area > div:not([id]):not([class]), div#content-area > p:not([id]):not([class])').extract())
+        # FIXME: can't assume that good content won't have IDs or classes. Should blacklist and remove bad html content instead.
+        #   see e.g. http://www.mobilemarketer.com/cms/sectors/travel/23565.html
+        # FIXME: can't assume content is in a <div> or a <p>. See http://www.mobilemarketer.com/cms/news/advertising/24630.html
+
         item['pub_date'] = response.css('.articlePublished::text').extract_first()
         item['authors'] = response.xpath('//p[@class="articleAuthor"]/a/text()').extract()
         item['topics'] = response.xpath('//div[@id="content"]/p/strong[contains(text(), "Related content:")]/../a/text()').extract()
