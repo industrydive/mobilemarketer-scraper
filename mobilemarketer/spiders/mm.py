@@ -13,22 +13,24 @@ class MmSpider(CrawlSpider):
         Rule(
             # content detail page
             LinkExtractor(
-                allow=(u'/cms/(news|opinion|resources|opinion|sectors)/([^/]+)/(\d+)\.html'),
-                deny=()
+                allow=(u'mobilemarketer.com/cms/(news|opinion|resources|opinion|sectors)/([^/]+)/(\d+)\.html'),
+                deny=(u'email_friend.php')
             ),
             callback='parse_detail_item',
             follow=True
         ),
         Rule(
-            # Tag page
             LinkExtractor(
-                allow=(u'/tag/', u'^/cms/[^/]+\.html', u'^/cms/[^/]+/[^/]+\.html'),
-                deny=()
+                allow=(
+                    u'mobilemarketer.com/tag/',  # tag page
+                    u'mobilemarketer.com/cms/[^/]+\.html',  # uber topic page
+                    u'mobilemarketer.com/cms/[^/]+/[^/]+\.html'),  # topic page
+                deny=(u'email_friend.php')
             ),
-            # callback='parse_generic_item',
-            # follow=True
+            callback='parse_generic_item',
+            follow=True
         )
-    ]      
+    ]
 
     def parse_detail_item(self, response):
         """
@@ -54,3 +56,4 @@ class MmSpider(CrawlSpider):
         item['url'] = response.url
         item['title'] = response.css('h1::text').extract_first()
         item['content'] = response.css("#content").extract()
+        return item

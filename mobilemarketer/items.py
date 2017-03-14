@@ -24,5 +24,6 @@ class MobileMarketerArticleItem(scrapy.Item):
 
 
 class MobileMarketerGenericItem(scrapy.Item):
+    url = scrapy.Field()
     title = scrapy.Field()
     content = scrapy.Field()
