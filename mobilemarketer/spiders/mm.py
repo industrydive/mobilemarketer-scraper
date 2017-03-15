@@ -14,7 +14,7 @@ class MmSpider(CrawlSpider):
             # content detail page
             LinkExtractor(
                 allow=(u'mobilemarketer.com/cms/(news|opinion|resources|opinion|sectors)/([^/]+)/(\d+)\.html'),
-                deny=(u'email_friend.php')
+                deny=(u'email_friend.php', u'/cms/general/')
             ),
             callback='parse_detail_item',
             follow=True
@@ -24,8 +24,13 @@ class MmSpider(CrawlSpider):
                 allow=(
                     u'mobilemarketer.com/tag/',  # tag page
                     u'mobilemarketer.com/cms/[^/]+\.html',  # uber topic page
-                    u'mobilemarketer.com/cms/[^/]+/[^/]+\.html'),  # topic page
-                deny=(u'email_friend.php')
+                    u'mobilemarketer.com/cms/[^/]+/[^/]+\.html'  # topic page
+                ),  
+                deny=(
+                    u'email_friend.php',
+                    u'/cms/general',
+                    u'/cms/newsletter/'
+                )
             ),
             callback='parse_generic_item',
             follow=True
@@ -44,7 +49,7 @@ class MmSpider(CrawlSpider):
         item = MobileMarketerArticleItem()
         item['url'] = response.url
         item['title'] = response.css('h1::text').extract_first()
-        item['body'] = ' '.join(response.css('div#content-area > div:not([id]):not([class]), div#content-area > p:not([id]):not([class])').extract())
+        item['body'] = ' '.join(response.css('div#content-area > *').extract())
         # FIXME: can't assume that good content won't have IDs or classes. Should blacklist and remove bad html content instead.
         #   see e.g. http://www.mobilemarketer.com/cms/sectors/travel/23565.html
         # FIXME: can't assume content is in a <div> or a <p>. See http://www.mobilemarketer.com/cms/news/advertising/24630.html
@@ -59,5 +64,5 @@ class MmSpider(CrawlSpider):
         item = MobileMarketerGenericItem()
         item['url'] = response.url
         item['title'] = response.css('h1::text').extract_first()
-        item['content'] = response.css("#content").extract()
+        item['content'] = ' '.join(response.css("#content > *").extract())
         return item
