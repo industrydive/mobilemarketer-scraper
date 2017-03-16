@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import scrapy
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from mobilemarketer.items import MobileMarketerArticleItem, MobileMarketerGenericItem
@@ -25,7 +24,8 @@ class MmSpider(CrawlSpider):
                     u'mobilemarketer.com/tag/',  # tag page
                     u'mobilemarketer.com/cms/[^/]+\.html',  # uber topic page
                     u'mobilemarketer.com/cms/[^/]+/[^/]+\.html'  # topic page
-                ),  
+                ),
+
                 deny=(
                     u'email_friend.php',
                     u'/cms/general',
