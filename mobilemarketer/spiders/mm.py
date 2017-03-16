@@ -7,13 +7,20 @@ from mobilemarketer.items import MobileMarketerArticleItem, MobileMarketerGeneri
 class MmSpider(CrawlSpider):
     name = "mm"
     allowed_domains = ["mobilemarketer.com"]
-    start_urls = ['http://mobilemarketer.com/']
+    start_urls = ['http://mobilemarketer.com/cms/news/email.html']
     rules = [
         Rule(
             # content detail page
             LinkExtractor(
-                allow=(u'mobilemarketer.com/cms/(news|opinion|resources|opinion|sectors)/([^/]+)/(\d+)\.html'),
-                deny=(u'email_friend.php', u'/cms/general/')
+                allow=(
+                    u'mobilemarketer.com/cms/news/email/(\d+)\.html'
+                    u'mobilemarketer.com/authors/(\d+)\.html'
+                ),
+                deny=(
+                    u'email_friend.php',
+                    u'/cms/general/',
+                    u'mobilemarketer.com/tag/',  # tag page
+                )
             ),
             callback='parse_detail_item',
             follow=True
@@ -21,12 +28,12 @@ class MmSpider(CrawlSpider):
         Rule(
             LinkExtractor(
                 allow=(
-                    u'mobilemarketer.com/tag/',  # tag page
                     u'mobilemarketer.com/cms/[^/]+\.html',  # uber topic page
                     u'mobilemarketer.com/cms/[^/]+/[^/]+\.html'  # topic page
                 ),
 
                 deny=(
+                    u'mobilemarketer.com/tag/',  # tag page
                     u'email_friend.php',
                     u'/cms/general',
                     u'/cms/newsletter/'
