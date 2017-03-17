@@ -69,10 +69,10 @@ DOWNLOADER_MIDDLEWARES = {
 #}
 
 # Configure item pipelines
-# See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   'mobilemarketer.pipelines.MobilemarketerPipeline': 300,
-}
+# # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
+# ITEM_PIPELINES = {
+#    'mobilemarketer.pipelines.MobilemarketerPipeline': 300,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -95,7 +95,7 @@ HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-DIVE_URL_REDIRECT_PATTERN = "/ex/mobilemarketer/%s"
+# DIVE_URL_REDIRECT_PATTERN = "/ex/mobilemarketer/%s"
 
 # FEED_URI = '/Users/eli/projects/mobilemarketer-scraper/data.jl'
 # FEED_FORMAT = 'jsonlines'

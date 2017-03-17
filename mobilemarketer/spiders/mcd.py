@@ -7,6 +7,13 @@ from mobilemarketer.items import MobileMarketerArticleItem
 
 class McdSpider(CrawlSpider):
     name = "mcd"
+    custom_settings = {
+        'ITEM_PIPELINES' : {
+            'mobilemarketer.pipelines.CommonItemProcessing': 300,
+            'mobilemarketer.pipelines.MobilecommercedailyPipeline': 300,
+        },
+        'DIVE_URL_REDIRECT_PATTERN': '/ex/mobilecommercedaily/%s'
+    }
     allowed_domains = ["mobilecommercedaily.com"]
     start_urls = ['http://mobilecommercedaily.com/']
     rules = [
@@ -14,14 +21,14 @@ class McdSpider(CrawlSpider):
             # content detail page
             LinkExtractor(
                 deny=(
-                	u'/category/',
-                	u'/tag/',
-                	u'/author/',
-                	u'/rss-feeds/',
-                	u'/print/?$',
-                	u'/email/?$',
-                	u'/jobs.php',
-                	u'/advertise',
+                    u'/category/',
+                    u'/tag/',
+                    u'/author/',
+                    u'/rss-feeds/',
+                    u'/print/?$',
+                    u'/email/?$',
+                    u'/jobs.php',
+                    u'/advertise',
                 )
             ),
             callback='parse_detail_item',
