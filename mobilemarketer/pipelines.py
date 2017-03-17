@@ -7,6 +7,7 @@
 
 from bs4 import BeautifulSoup
 import re
+import dateparser
 
 def remove_mm_hostname_from_url(url):
     """ turn MM aboslute URLS into relative ones, with no leading slash """
@@ -48,4 +49,7 @@ class MobilemarketerPipeline(object):
                 item[html_key] = process_mm_html(item[html_key], spider.settings.get('DIVE_URL_REDIRECT_PATTERN'))
         # make url just the relative path, with no leading slash
         item['url'] = remove_mm_hostname_from_url(item['url'])  # make url just the relative path
+        # convert pub_date text to a real python datetime
+        if item['pub_date']:
+            item['pub_date'] = dateparser.parse(item['pub_date'])
         return item
