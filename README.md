@@ -8,3 +8,5 @@ Press Ctrl-C twice to abort
 ## how to deploy to scrapinghub
 
 $ shub deploy
+
+First time you will need an api key from 

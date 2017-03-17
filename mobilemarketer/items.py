@@ -16,6 +16,7 @@ class MobilemarketerItem(scrapy.Item):
 class MobileMarketerArticleItem(scrapy.Item):
     url = scrapy.Field()
     title = scrapy.Field()
+    page_title = scrapy.Field()
     body = scrapy.Field()
     pub_date = scrapy.Field()
     topics = scrapy.Field()
