@@ -95,7 +95,7 @@ HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-
+DIVE_URL_REDIRECT_PATTERN = "/ex/mobilemarketer/%s"
 
 # FEED_URI = '/Users/eli/projects/mobilemarketer-scraper/data.jl'
 # FEED_FORMAT = 'jsonlines'

@@ -19,22 +19,6 @@ class MmSpider(CrawlSpider):
             callback='parse_detail_item',
             follow=True
         ),
-        Rule(
-            LinkExtractor(
-                allow=(
-                    u'mobilemarketer.com/tag/',  # tag page
-                    u'mobilemarketer.com/cms/[^/]+\.html',  # uber topic page
-                    u'mobilemarketer.com/cms/[^/]+/[^/]+\.html'  # topic page
-                ),  
-                deny=(
-                    u'email_friend.php',
-                    u'/cms/general',
-                    u'/cms/newsletter/'
-                )
-            ),
-            callback='parse_generic_item',
-            follow=True
-        )
     ]
 
     def parse_detail_item(self, response):
@@ -50,6 +34,7 @@ class MmSpider(CrawlSpider):
         item['url'] = response.url
         item['title'] = response.css('h1::text').extract_first()
         item['body'] = ' '.join(response.css('div#content-area > *').extract())
+        item['page_title'] = response.xpath('//title/text()').extract()
         # FIXME: can't assume that good content won't have IDs or classes. Should blacklist and remove bad html content instead.
         #   see e.g. http://www.mobilemarketer.com/cms/sectors/travel/23565.html
         # FIXME: can't assume content is in a <div> or a <p>. See http://www.mobilemarketer.com/cms/news/advertising/24630.html
@@ -60,6 +45,7 @@ class MmSpider(CrawlSpider):
         return item
 
     def parse_generic_item(self, response):
+        """ Not currently used """
         self.logger.info('Hi, this is generic page! %s', response.url)
         item = MobileMarketerGenericItem()
         item['url'] = response.url
