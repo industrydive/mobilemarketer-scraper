@@ -4,7 +4,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-
+from scrapy.exceptions import DropItem
 from bs4 import BeautifulSoup
 import re
 import dateparser
@@ -20,6 +20,7 @@ def process_mm_html(html, redirect_pattern):
     soup = BeautifulSoup(html, 'lxml')
     # throw away junk
     bad_html = soup.find_all(class_=["centerBanner", "tools", "breadcrumb", "articleAuthor", "articlePublished", "articleImg"])
+    bad_html += soup.find_all(class_=["navigation","postmetadata","mr_social_sharing_wrapper", "banner"])  # MCD bad classes
     bad_html += soup.find_all('h1')  # we already extracted the title of the page
     bad_html += soup.find_all('a', {'name': 'top'})  # pointless anchor linking to top of page
     bad_html += soup.find_all('div', {"id" : re.compile('beacon_[0-9a-z]+')})  # beacon_* is for ad tracking
@@ -44,6 +45,10 @@ def process_mm_html(html, redirect_pattern):
 
 class MobilemarketerPipeline(object):
     def process_item(self, item, spider):
+        if not item['title']:
+            raise DropItem("Missing title")
+        if not item['pub_date']:
+            raise DropItem("Missing pub_date")
         for html_key in ('body','content'):
             if html_key in item and item[html_key]:
                 item[html_key] = process_mm_html(item[html_key], spider.settings.get('DIVE_URL_REDIRECT_PATTERN'))
