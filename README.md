@@ -13,7 +13,7 @@ To stop a running spider, press Ctrl-C twice.
 
 ### Scrape mobilemarketer.com 
 ```
-docker-compose run scrapy crawl mm --set=FEED_URI=`pwd`/mm_data.jl --set=FEED_FORMAT=jsonlines
+docker-compose run scrapy crawl mm --set=FEED_URI=mm_data.jl --set=FEED_FORMAT=jsonlines
 ```
 
 And then there's a super hacky script to convery jsonlines to a fixture you can run like:
@@ -29,7 +29,7 @@ it assumes input is mm_data.jl and output is mm_fixture.json
 Same as above but the spider is "mcd" instead of "mm"
 
 ```
-docker-compose run scrapy crawl mcd --set=FEED_URI=`pwd`/mcm_data.jl --set=FEED_FORMAT=jsonlines
+docker-compose run scrapy crawl mcd --set=FEED_URI=mcd_data.jl --set=FEED_FORMAT=jsonlines
 ```
 
 

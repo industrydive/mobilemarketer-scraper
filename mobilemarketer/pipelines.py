@@ -43,6 +43,7 @@ def process_mm_html(html, redirect_pattern, hostname):
     return unicode(soup).strip()  # colllapse to string and strip whitespace
 
 class CommonItemProcessing(object):
+    """ HTML munging and other cleanup tasks that are common to both MM and MCD """
     def process_item(self, item, spider):
         if not item['title']:
             raise DropItem("Missing title")
@@ -54,6 +55,7 @@ class CommonItemProcessing(object):
 
 
 class MobilemarketerPipeline(object):
+    """ Item cleanup tasks specific to MM """
     def process_item(self, item, spider):
         hostname = "mobilemarketer.com"
         for html_key in ('body','content'):
@@ -67,6 +69,7 @@ class MobilemarketerPipeline(object):
         return item
 
 class MobilecommercedailyPipeline(object):
+    """ Item cleanup tasks specific to MCD """
     def process_item(self, item, spider):
         hostname = "mobilecommercedaily.com"
         for html_key in ('body','content'):
