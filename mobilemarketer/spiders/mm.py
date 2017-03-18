@@ -9,6 +9,13 @@ class MmSpider(CrawlSpider):
     name = "mm"
     allowed_domains = ["mobilemarketer.com"]
     start_urls = ['http://mobilemarketer.com/']
+    custom_settings = {
+        'ITEM_PIPELINES' : {
+            'mobilemarketer.pipelines.CommonItemProcessing': 300,
+            'mobilemarketer.pipelines.MobilemarketerPipeline': 300,
+        },
+        'DIVE_URL_REDIRECT_PATTERN': '/ex/mobilemarketer/%s'
+    }    
     rules = [
         Rule(
             # content detail page
