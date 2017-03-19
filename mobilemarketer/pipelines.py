@@ -21,15 +21,15 @@ def process_mm_html(html, redirect_pattern, hostname):
     soup = BeautifulSoup(html, 'lxml')
     # throw away junk
     bad_html = soup.find_all(class_=["centerBanner", "tools", "breadcrumb", "articleAuthor", "articlePublished", "articleImg"])
-    bad_html += soup.find_all(class_=["navigation","postmetadata alt","mr_social_sharing_wrapper", "banner", "authordesc"])  # MCD bad classes
+    bad_html += soup.find_all(class_=["navigation","postmetadata","mr_social_sharing_wrapper", "banner", "authordesc"])  # MCD bad classes
     bad_html += soup.find_all('h1')  # we already extracted the title of the page
     bad_html += soup.find_all('a', {'name': 'top'})  # pointless anchor linking to top of page
     bad_html += soup.find_all('div', {"id" : re.compile('beacon_[0-9a-z]+')})  # beacon_* is for ad tracking
     bad_html += soup.find_all('a', {'target': '_new', 'href': 'http://www.mobilecommercedaily.com/newsletter/'})  # signup ad
     # for MCD; might be too broad
-    bad_html += soup.find_all('small')
+    # bad_html += soup.find_all('small')
     # actually remove the things we matched
-    [x.extract() for x in bad_html]
+    [x.decompose() for x in bad_html]
     # make links relative by removing mobilemarketer.com hostname
     for link in soup.find_all('a', href=True):
         # make all mobilemarketer links relative
@@ -43,8 +43,12 @@ def process_mm_html(html, redirect_pattern, hostname):
     # hacky trick to remove <html><body> wrappers added automatically by lxml
     soup.html.unwrap()
     soup.body.unwrap()
+    # convert to str
+    html_str = unicode(soup).strip()
+    # strip everything after tags for MCD
+    html_str = re.sub(r'<p>Tags:.*$', '', html_str)
     # return what's left
-    return unicode(soup).strip()  # colllapse to string and strip whitespace
+    return html_str
 
 class CommonItemProcessing(object):
     """ HTML munging and other cleanup tasks that are common to both MM and MCD """
