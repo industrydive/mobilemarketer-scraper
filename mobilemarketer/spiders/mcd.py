@@ -12,19 +12,25 @@ class McdSpider(CrawlSpider):
             'mobilemarketer.pipelines.CommonItemProcessing': 300,
             'mobilemarketer.pipelines.MobilecommercedailyPipeline': 300,
         },
+        # 'REDIRECT_ENABLED': False,  # they have a lot of offsite redirects
         'DIVE_URL_REDIRECT_PATTERN': '/ex/mobilecommercedaily/%s'
     }
-    allowed_domains = ["mobilecommercedaily.com"]
-    start_urls = ['http://mobilecommercedaily.com/']
+    allowed_domains = ["www.mobilecommercedaily.com"]
+    start_urls = ['http://www.mobilecommercedaily.com/']
     rules = [
         Rule(
             # content detail page
             LinkExtractor(
+                restrict_css = ('h1', 'div.navigation'),
                 deny=(
                     u'/category/',
                     u'/tag/',
                     u'/author/',
+                    u'/page/',
+                    u'/newsletter-archive/',
                     u'/rss-feeds/',
+                    u'/wp-content/',
+                    u'/newsletter$',
                     u'/print/?$',
                     u'/email/?$',
                     u'/jobs.php',
@@ -48,7 +54,7 @@ class McdSpider(CrawlSpider):
         item = MobileMarketerArticleItem()
         item['url'] = response.url
         item['title'] = response.css('h1::text').extract_first()
-        item['body'] = ' '.join(response.css('div.entry > p, div.entry > div').extract())
+        item['body'] = ' '.join(response.css('div.entry > *').extract())
         item['page_title'] = response.xpath('//title/text()').extract()
         # FIXME: can't assume that good content won't have IDs or classes. Should blacklist and remove bad html content instead.
         #   see e.g. http://www.mobilemarketer.com/cms/sectors/travel/23565.html
