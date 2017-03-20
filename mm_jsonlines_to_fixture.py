@@ -8,11 +8,12 @@ with open('mm_data.jl') as f:
         item = {
             'model': 'legacyapps.MobileMarketerStory',
             'fields': {
-                'site_id': 18,
+                'site_id': 19,
                 'legacy_url_primary_path': json_line['url'],
                 'custom_byline':  ', '.join(json_line['authors']),
                 'title': json_line['title'],
                 'body': json_line['body'],
+                'pub_date': json_line['pub_date'],
             }
         }
         output.append(item)
