@@ -27,12 +27,12 @@ ROBOTSTXT_OBEY = True
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1
+# DOWNLOAD_DELAY = 0.50
 # The download delay setting will honor only one of:
-# CONCURRENT_REQUESTS_PER_DOMAIN = 2
+# CONCURRENT_REQUESTS_PER_DOMAIN = 5
 #CONCURRENT_REQUESTS_PER_IP = 16
 
-CLOSESPIDER_ERRORCOUNT = 1 # for debugging
+# CLOSESPIDER_ERRORCOUNT = 1 # for debugging
 
 # Disable cookies (enabled by default)
 #COOKIES_ENABLED = False
@@ -92,7 +92,7 @@ DOWNLOADER_MIDDLEWARES = {
 HTTPCACHE_ENABLED = True
 # HTTPCACHE_EXPIRATION_SECS = 0
 HTTPCACHE_DIR = 'httpcache'
-#HTTPCACHE_IGNORE_HTTP_CODES = []
+HTTPCACHE_IGNORE_HTTP_CODES = [200,301,302,404]
 HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # DIVE_URL_REDIRECT_PATTERN = "/ex/mobilemarketer/%s"

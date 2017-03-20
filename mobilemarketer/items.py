@@ -13,7 +13,7 @@ class MobilemarketerItem(scrapy.Item):
     # name = scrapy.Field()
     pass
 
-class MobileMarketerArticleItem(scrapy.Item):
+class NewsArticleItem(scrapy.Item):
     url = scrapy.Field()
     title = scrapy.Field()
     page_title = scrapy.Field()

@@ -3,3 +3,4 @@ project.egg-info
 *.jl
 /.scrapy
 /mm_fixture.json
+/crawls

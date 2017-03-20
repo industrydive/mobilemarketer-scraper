@@ -2,7 +2,7 @@
 import scrapy
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
-from mobilemarketer.items import MobileMarketerArticleItem
+from mobilemarketer.items import NewsArticleItem
 
 
 class McdSpider(CrawlSpider):
@@ -51,7 +51,7 @@ class McdSpider(CrawlSpider):
         """
         self.logger.info('Hi, this is an item page! %s', response.url)
         # item = scrapy.Item()
-        item = MobileMarketerArticleItem()
+        item = NewsArticleItem()
         item['url'] = response.url
         item['title'] = response.css('h1::text').extract_first()
         item['body'] = ' '.join(response.css('div.entry > *').extract())
