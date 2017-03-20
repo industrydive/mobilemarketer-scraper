@@ -30,11 +30,11 @@ class McdSpider(CrawlSpider):
                     u'/newsletter-archive/',
                     u'/rss-feeds/',
                     u'/wp-content/',
-                    u'/newsletter$',
+                    u'/newsletter/?$',
                     u'/print/?$',
                     u'/email/?$',
                     u'/jobs.php',
-                    u'/advertise',
+                    u'/advertise/?$',
                 )
             ),
             callback='parse_detail_item',
