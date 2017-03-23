@@ -5,7 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from scrapy.exceptions import DropItem
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 import re
 import dateparser
 
@@ -20,19 +20,31 @@ def remove_hostname_from_url(url,hostname):
 def process_mm_html(html, redirect_pattern, hostname):
     soup = BeautifulSoup(html, 'lxml')
     # throw away junk
-    bad_html = soup.find_all(class_=["centerBanner", "tools", "breadcrumb", "articleAuthor", "articlePublished", "articleImg"])
+    bad_html = soup.find_all(class_=["centerBanner", "tools", "breadcrumb", "articleAuthor", "articlePublished"])
     bad_html += soup.find_all(class_=["navigation","postmetadata","mr_social_sharing_wrapper", "banner", "authordesc"])  # MCD bad classes
     bad_html += soup.find_all('h1')  # we already extracted the title of the page
     bad_html += soup.find_all('a', {'name': 'top'})  # pointless anchor linking to top of page
     bad_html += soup.find_all('div', {"id" : re.compile('beacon_[0-9a-z]+')})  # beacon_* is for ad tracking
     bad_html += soup.find_all('a', {'target': '_new', 'href': 'http://www.mobilecommercedaily.com/newsletter/'})  # signup ad
-    # for MCD; might be too broad
-    # bad_html += soup.find_all('small')
+        
     # actually remove the things we matched
     [x.decompose() for x in bad_html]
+
+    # comment out hero images
+    for img_wrapper in soup.find_all('div', {'class': ['articleImg', 'wp-caption']}):
+        img_wrapper.replace_with(Comment(str(img_wrapper)))
+    # comment out embedded images
+    for img in soup.find_all('img', src=re.compile(r'http://www\.mobile(marketer|commercedaily)\.com/')):
+        img_parent = img.parent
+        if img_parent.name == 'a':
+            img_parent = img_parent.parent
+        # only proceed if there isn't much text in this tree
+        if len(img_parent.get_text()) < 300:
+            img_parent.replace_with(Comment(str(img_parent)))
+
     # make links relative by removing mobilemarketer.com hostname
     for link in soup.find_all('a', href=True):
-        # make all mobilemarketer links relative
+        # make all absolute links to this site relative
         href = remove_hostname_from_url(link['href'], hostname)
         # only munge relative links, not links to other domains
         if not re.match(r'https?://', href):
@@ -41,8 +53,10 @@ def process_mm_html(html, redirect_pattern, hostname):
     # TODO: clean with bleach
 
     # hacky trick to remove <html><body> wrappers added automatically by lxml
-    soup.html.unwrap()
-    soup.body.unwrap()
+    if soup.html is not None:
+        soup.html.unwrap()
+    if soup.body is not None:
+        soup.body.unwrap()
     # convert to str
     html_str = unicode(soup).strip()
     # strip everything after tags for MCD
